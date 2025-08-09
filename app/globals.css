@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme{
+  --color-primary: #5f6FFF;
+  --color-secondary: green;
+  --auto: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+::-webkit-scrollbar{
+  @apply hidden
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /*chrome safari */
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none; /* firefox*/
+}
