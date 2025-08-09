@@ -7,9 +7,9 @@ import toast from "react-hot-toast";
 
 
 const Doctors = () => {
-    const {router, user, doctors} = useAppContext();
+    const {router, user, doctors, speciality, setSpeciality} = useAppContext();
 
-    const [speciality, setSpeciality] = useState('');
+    
     const [filterDoc, setFilterDoc] = useState([]);
     const [showFilter, setShowFilter] = useState(false);
 

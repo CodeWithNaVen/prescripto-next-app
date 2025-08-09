@@ -1,9 +1,11 @@
+import connectDB from "@/lib/db";
 import doctorModel from "@/models/doctor";
 import { NextResponse } from "next/server";
 
 
 export const GET = async () => {
     try {
+        await connectDB();
         const doctors = await doctorModel.find({});
 
         if(doctors) {

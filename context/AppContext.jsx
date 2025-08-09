@@ -23,6 +23,8 @@ export const AppContextProvider = ({ children }) => {
 
   const [doctors, setDoctors] = useState([]);
 
+  const [speciality, setSpeciality] = useState('');
+
   // Fetch user data on mount
   const getUserProfile = async () => {
       try {
@@ -96,7 +98,9 @@ export const AppContextProvider = ({ children }) => {
     getUserProfile,
     doctors,
     fetchUserProfileInfo,
-    fetchAllDoctors
+    fetchAllDoctors,
+    speciality,
+    setSpeciality
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

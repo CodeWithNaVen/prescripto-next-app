@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAppContext } from '@/context/AppContext';
 import Link from 'next/link';
+import Image from 'next/image';
+import { assets } from '@/assets/assets';
 
 const LoginPage = () => {
     const {user, router, loadingUser} = useAppContext();
@@ -39,7 +41,7 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (!loadingUser && user) {
-        router.push('/'); // redirect to home or user dashboard
+            router.push('/'); // redirect to home or user dashboard
         }
     }, [user, loadingUser, router]);
 
@@ -48,70 +50,72 @@ const LoginPage = () => {
     }
 
     return (
-        <>
-        <div className="flex items-center justify-center min-h-screen px-4 ">
-            <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-            <h2 className="text-2xl font-semibold mb-6 text-center">User Login</h2>
+        <main>
+            <button onClick={()=> router.push('/')} className='border-2 border-primary py-2 px-4 rounded-full hover:bg-opacity-90 active:scale-95 duration-300 transition cursor-pointer mx-20 my-10'><Image src={assets.arrow_icon} alt="" width={0} height={0} className='w-4 h-4 inline rotate-180'/>&nbsp; Back to Home</button>
 
-            {errorMsg && <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>}
+            <div className="flex items-center justify-center min-h-screen px-4 ">
+                <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
+                <h2 className="text-2xl font-semibold mb-6 text-center">User Login</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                <label className="block mb-1 text-sm font-medium">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    placeholder="Enter your email"
-                    required
-                />
-                </div>
+                {errorMsg && <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>}
 
-                <div>
-                <label className="block mb-1 text-sm font-medium">Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    placeholder="Enter your password"
-                    required
-                />
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div>
+                    <label className="block mb-1 text-sm font-medium">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                        placeholder="Enter your email"
+                        required
+                    />
+                    </div>
 
-                <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-white py-2 rounded-md hover:bg-opacity-90 active:scale-95 duration-300 transition cursor-pointer"
-                >
-                {loading ? 'Logging in...' : 'Login'}
-                </button>
-            </form>
+                    <div>
+                    <label className="block mb-1 text-sm font-medium">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                        placeholder="Enter your password"
+                        required
+                    />
+                    </div>
 
-            <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Link href="/register" className="text-primary font-medium hover:underline">
-                   Register
-                </Link>
-                </p>
+                    <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-primary text-white py-2 rounded-md hover:bg-opacity-90 active:scale-95 duration-300 transition cursor-pointer"
+                    >
+                    {loading ? 'Logging in...' : 'Login'}
+                    </button>
+                </form>
 
-
-                {/* admin login link */}
-                <p className="text-sm text-gray-600 mt-3">
-                    Are you an admin?{' '}
-                    <Link href="/admin/login" className="text-red-500 font-medium hover:underline">
-                    Admin Login
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600">
+                    Don't have an account?{' '}
+                    <Link href="/register" className="text-primary font-medium hover:underline">
+                    Register
                     </Link>
-                </p>
+                    </p>
+
+
+                    {/* admin login link */}
+                    <p className="text-sm text-gray-600 mt-3">
+                        Are you an admin?{' '}
+                        <Link href="/admin/login" className="text-red-500 font-medium hover:underline">
+                        Admin Login
+                        </Link>
+                    </p>
+                </div>
+                
+                </div>
             </div>
-            
-            </div>
-        </div>
-        </>
+        </main>
     );
 };
 

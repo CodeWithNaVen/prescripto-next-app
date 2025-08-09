@@ -25,7 +25,7 @@ const TopDoctors = () => {
       getDoctors();
     }, [])
 
-  return (
+  return doctors.length > 0 ? (
     <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
       <h1 className='text-3xl md:text-4xl font-medium'>Top Doctors to Book</h1>
       <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors.</p>
@@ -38,6 +38,13 @@ const TopDoctors = () => {
         }
       </div>
       <button onClick={()=>{router.push('/doctors'); scrollTo(0,0)}} className='bg-primary text-white px-12 py-2 md:py-3 rounded-full'>More</button>
+    </div>
+  ) : (
+    // show please login to see our doctor and a login button
+    <div className='flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10'>
+      <h1 className='text-3xl md:text-4xl font-medium'>Top Doctors to Book</h1>
+      <p className='sm:w-1/3 text-center text-sm'>Please login to see our doctors</p>
+     
     </div>
   )
 }
