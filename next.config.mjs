@@ -1,9 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
+    // images: {
+    //     domains: ["", ""],
+    // },
+
     images: {
-        domains: ["res.cloudinary.com", "media4.giphy.com"],
-    },
+        remotePatterns: [
+            { protocol: 'https', hostname: 'res.cloudinary.com' },
+            { protocol: 'https', hostname: 'media4.giphy.com' },
+            { protocol: 'https', hostname: 'picsum.photos' }
+        ]
+    }
 };
 
 export default nextConfig;
