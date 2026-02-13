@@ -8,12 +8,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { assets } from "@/assets/assets";
 import toast from "react-hot-toast";
+import VoiceModal from "../AiComponents/VoiceModal";
+import { Phone } from "lucide-react";
 
 const Navbar = () => {
     const path = usePathname();
 
     const { router, user, axios, getUserProfile } = useAppContext();
     const [showMenu, setShowMenu] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 
     const logout = async() => {
@@ -33,8 +39,82 @@ const Navbar = () => {
         }
     };
 
+    // appointments logics
+    const fetchAppointments = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/ai/appointments');
+        const data = await response.json();
+
+        if (data.success) {
+          setAppointments(data.appointments || []);
+        } else {
+          console.error('Failed to fetch appointments');
+        }
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleAppointmentBooked = async (appt) => {
+      console.log("🚀 Frontend received appt from AI:", appt);
+      try {
+        const response = await fetch('/api/ai/appointments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appt),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setAppointments(prev => [data.appointment, ...prev]);
+          console.log('✅ Successfully saved to MongoDB:', data.appointment);
+        } else {
+          console.error('❌ DB Error:', data.error);
+        }
+      } catch (error) {
+        console.error('❌ Network Error:', error);
+      }
+    };
+
+    const handleDeleteAppointment = async (id) => {
+      if (!confirm('Are you sure you want to delete this appointment?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/ai/appointments', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Remove from local state
+          setAppointments(prev => prev.filter(appt => appt.id !== id));
+          console.log('✅ Appointment deleted from MongoDB');
+        } else {
+          console.error('Failed to delete appointment:', data.error);
+          alert('Failed to delete appointment.');
+        }
+      } catch (error) {
+        console.error('Error deleting appointment:', error);
+        alert('Error deleting appointment.');
+      }
+    };
+
     useEffect(() => {
         getUserProfile();
+    }, []);
+
+    // Load appointments from MongoDB API on mount
+    useEffect(() => {
+      fetchAppointments();
     }, []);
 
   return (
@@ -82,6 +162,15 @@ const Navbar = () => {
             } border-none outline-none h-0.5 w-3/4 m-auto bg-primary`}
           />
         </Link>
+
+        {/* assistant triggerd button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <Phone size={20} />
+          <span className="font-semibold">Talk to Assistant</span>
+        </button>
       </ul>
 
       {/* menu toggle + mobile menu container */}
@@ -210,6 +299,13 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
+
+      {/* Voice Modal */}
+      <VoiceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAppointmentBooked={handleAppointmentBooked}
+      />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+// app/api/user/doctors/route.js
 import connectDB from "@/lib/db";
 import doctorModel from "@/models/doctor";
 import { NextResponse } from "next/server";

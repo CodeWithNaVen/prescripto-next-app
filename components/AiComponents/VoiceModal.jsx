@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import { X, Mic, MessageSquare, PhoneOff, Pause, Play } from 'lucide-react';
 import AudioVisualizer from './AudioVisualizer';
 import { BOOK_APPOINTMENT_TOOL, SYSTEM_INSTRUCTION } from '@/constants';
@@ -84,43 +84,48 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                     throw new Error('NEXT_PUBLIC_GEMINI_API_KEY is not set');
                 }
 
-                const ai = new GoogleGenAI({apiKey});
+                const ai = new GoogleGenAI({ apiKey });
 
                 // Setup Audio Contexts
-                inputContextRef.current = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-                outputContextRef.current = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+                inputContextRef.current = new (window.AudioContext || (window).webkitAudioContext)({ sampleRate: 16000 });
+                outputContextRef.current = new (window.AudioContext || (window).webkitAudioContext)({ sampleRate: 24000 });
 
                 // Get Microphone Stream
                 streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
 
                 // Connect to Gemini Live
                 const sessionPromise = ai.live.connect({
-                    model: 'gemini-2.0-flash-exp', // Ensure this matches your desired model
+                    model: 'gemini-2.5-flash-native-audio-preview-12-2025',
                     config: {
-                        responseModalities: ["audio"],
+                        responseModalities: [Modality.AUDIO],
                         systemInstruction: SYSTEM_INSTRUCTION,
                         tools: [{ functionDeclarations: [BOOK_APPOINTMENT_TOOL] }],
                         speechConfig: {
                             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Fenrir' } },
                         },
+                        // Enable Transcriptions
                         inputAudioTranscription: {},
                         outputAudioTranscription: {},
                     },
                     callbacks: {
                         onopen: () => {
                             if (!mounted) return;
+                            console.log('Gemini Live Connection Opened');
                             setStatus('connected');
 
+                            // Setup Audio Input Processing
                             if (!inputContextRef.current || !streamRef.current) return;
 
                             sourceNodeRef.current = inputContextRef.current.createMediaStreamSource(streamRef.current);
                             processorRef.current = inputContextRef.current.createScriptProcessor(4096, 1, 1);
 
                             processorRef.current.onaudioprocess = (e) => {
-                                if (isPausedRef.current) return;
+                                if (isPausedRef.current) return; // Don't send audio if paused
+
                                 const inputData = e.inputBuffer.getChannelData(0);
                                 const pcmBlob = createPcmBlob(inputData);
 
+                                // Send audio to Gemini
                                 sessionPromise.then((session) => {
                                     session.sendRealtimeInput({ media: pcmBlob });
                                 });
@@ -132,14 +137,17 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                         onmessage: async (message) => {
                             if (!mounted) return;
 
-                            // Transcription Handling
+                            // --- Transcription Handling ---
+                            let transcriptUpdate = false;
                             if (message.serverContent?.inputTranscription) {
                                 inputBufferRef.current += message.serverContent.inputTranscription.text;
                                 setRealtimeInput(inputBufferRef.current);
+                                transcriptUpdate = true;
                             }
                             if (message.serverContent?.outputTranscription) {
                                 outputBufferRef.current += message.serverContent.outputTranscription.text;
                                 setRealtimeOutput(outputBufferRef.current);
+                                transcriptUpdate = true;
                             }
 
                             if (message.serverContent?.turnComplete) {
@@ -158,24 +166,32 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                                 setRealtimeInput('');
                                 setRealtimeOutput('');
                             }
+                            // -----------------------------
 
-                            // Audio Output Handling
-                            const base64Audio = message?.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data || '';
+                            // Handle Audio Output
+                            const base64Audio = message?.serverContent?.modelTurn?.parts[0]?.inlineData?.data || '';
                             if (base64Audio && outputContextRef.current) {
-                                if (isPausedRef.current) return;
+                                if (isPausedRef.current) return; // Don't play if paused
+
                                 setIsAiSpeaking(true);
 
                                 const ctx = outputContextRef.current;
                                 nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);
 
-                                const audioBuffer = await decodeAudioData(base64ToUint8Array(base64Audio), ctx);
+                                const audioBuffer = await decodeAudioData(
+                                    base64ToUint8Array(base64Audio),
+                                    ctx
+                                );
+
                                 const source = ctx.createBufferSource();
                                 source.buffer = audioBuffer;
                                 source.connect(ctx.destination);
 
                                 source.addEventListener('ended', () => {
                                     audioSourcesRef.current.delete(source);
-                                    if (audioSourcesRef.current.size === 0) setIsAiSpeaking(false);
+                                    if (audioSourcesRef.current.size === 0) {
+                                        setIsAiSpeaking(false);
+                                    }
                                 });
 
                                 source.start(nextStartTimeRef.current);
@@ -185,75 +201,132 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
 
                             // Handle Interruption
                             if (message.serverContent?.interrupted) {
-                                audioSourcesRef.current.forEach(s => { try { s.stop(); } catch (e) { } });
+                                audioSourcesRef.current.forEach(s => {
+                                    try { s.stop(); } catch (e) { }
+                                });
                                 audioSourcesRef.current.clear();
                                 nextStartTimeRef.current = 0;
                                 setIsAiSpeaking(false);
+
+                                // If interrupted, push current buffers to history
+                                if (outputBufferRef.current) {
+                                    setHistory(prev => [...prev, { role: 'model', text: outputBufferRef.current.trim() }]);
+                                    outputBufferRef.current = '';
+                                    setRealtimeOutput('');
+                                }
                             }
 
                             // Handle Tool Calls (Booking)
                             if (message.toolCall) {
                                 for (const fc of message.toolCall.functionCalls) {
                                     if (fc.name === 'bookAppointment') {
-                                        const args = fc.args;
+                                        console.log('💎 AI requested tool call:', fc.args);
+                                        const args = fc.args || {};
+
+                                        // 1. Create the appointment object
                                         const newAppt = {
                                             id: Math.random().toString(36).substr(2, 9),
-                                            ...args,
+                                            patientName: args.patientName,
+                                            doctorName: args.doctorName,
+                                            date: args.date,
+                                            symptom: args.symptom,
                                             status: 'confirmed'
                                         };
 
+                                        console.log('📝 Triggering DB Save for:', newAppt);
+
+                                        // 2. IMPORTANT: Call parent function to save to MongoDB
+                                        // We do this immediately so the DB starts processing
                                         onAppointmentBooked(newAppt);
 
+                                        // 3. Inform Gemini that the tool was executed successfully
+                                        // FIX: functionResponses MUST be an array []
                                         try {
                                             const session = await sessionRef.current;
                                             if (session) {
                                                 session.sendToolResponse({
-                                                    functionResponses: [{
+                                                    functionResponses: [{ //--- THIS MUST BE AN ARRAY
                                                         id: fc.id,
                                                         name: fc.name,
-                                                        response: { result: "Success", id: newAppt.id }
+                                                        response: {
+                                                            result: "Success",
+                                                            message: "Appointment confirmed and saved to database with ID: " + newAppt.id
+                                                        }
                                                     }]
                                                 });
+                                                console.log('✅ Sent tool response back to Gemini');
                                             }
                                         } catch (err) {
-                                            console.error('Tool response failed', err);
+                                            console.error('❌ Failed to send tool response:', err);
                                         }
                                     }
                                 }
                             }
                         },
-                        onclose: () => { if (mounted) setStatus('idle'); },
-                        onerror: (err) => { console.error(err); if (mounted) setStatus('error'); }
+                        onclose: () => {
+                            if (mounted) setStatus('idle');
+                        },
+                        onerror: (err) => {
+                            console.error(err);
+                            if (mounted) setStatus('error');
+                        }
                     }
                 });
 
                 sessionRef.current = sessionPromise;
+
             } catch (err) {
                 console.error("Connection failed", err);
                 setStatus('error');
             }
         };
 
-        if (isOpen) startSession();
+        if (isOpen) {
+            startSession();
+        }
 
+        // Cleanup function
         return () => {
             mounted = false;
-            if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
-            if (sourceNodeRef.current) sourceNodeRef.current.disconnect();
-            if (processorRef.current) processorRef.current.disconnect();
-            if (inputContextRef.current) inputContextRef.current.close();
-            audioSourcesRef.current.forEach(s => { try { s.stop(); } catch (e) { } });
-            if (outputContextRef.current) outputContextRef.current.close();
-            if (sessionRef.current) sessionRef.current.then(s => { try { s.close(); } catch (e) { } });
+
+            // Stop Inputs
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+            }
+            if (sourceNodeRef.current) {
+                sourceNodeRef.current.disconnect();
+            }
+            if (processorRef.current) {
+                processorRef.current.disconnect();
+            }
+            if (inputContextRef.current) {
+                inputContextRef.current.close();
+            }
+
+            // Stop Outputs
+            audioSourcesRef.current.forEach(s => {
+                try { s.stop(); } catch (e) { }
+            });
+            if (outputContextRef.current) {
+                outputContextRef.current.close();
+            }
+
+            // Close Session
+            if (sessionRef.current) {
+                sessionRef.current.then((session) => {
+                    try { session.close(); } catch (e) { }
+                });
+            }
         };
     }, [isOpen]);
+
 
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative border border-slate-200 flex flex-col max-h-[90vh]">
-                
+
                 {/* Header */}
                 <div className="bg-slate-900 px-6 py-4 flex items-center justify-between shrink-0">
                     <div className="flex items-center space-x-2">
@@ -265,35 +338,40 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                     </button>
                 </div>
 
-                {/* Visualizer */}
+                {/* Visualizer & Status */}
                 <div className="p-6 pb-2 shrink-0 bg-slate-50 border-b border-slate-100">
                     <div className="text-center mb-4">
-                        <p className="text-slate-500 text-xs uppercase tracking-wider">
-                            {status === 'connecting' ? 'Connecting...' : status === 'connected' ? (isPaused ? 'Paused' : 'Live') : status}
-                        </p>
+                        {status === 'connecting' && <p className="text-slate-500 text-xs uppercase tracking-wider animate-pulse">Establishing Secure Connection...</p>}
+                        {status === 'connected' && !isPaused && <p className="text-teal-600 text-xs uppercase tracking-wider font-semibold">Live Session Active</p>}
+                        {status === 'connected' && isPaused && <p className="text-amber-500 text-xs uppercase tracking-wider font-semibold">Session Paused</p>}
+                        {status === 'error' && <p className="text-red-500 text-xs uppercase tracking-wider font-semibold">Connection Error</p>}
                     </div>
+                    {/* Visualizer shows flat line when paused */}
                     <AudioVisualizer isActive={status === 'connected' && !isPaused} isSpeaking={isAiSpeaking} />
                 </div>
 
-                {/* Transcript */}
+                {/* Transcript Feed (Scrollable) */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white" ref={transcriptContainerRef}>
                     {history.length === 0 && !realtimeInput && !realtimeOutput && (
                         <div className="text-center text-slate-400 py-8 italic text-sm">
                             <MessageSquare size={32} className="mx-auto mb-2 opacity-20" />
-                            <p>Try saying: "Book an appointment with Dr. Smith"</p>
+                            <p>Conversation history will appear here.</p>
+                            <p className="mt-2 text-xs">Try saying: &quot;Book an appointment with Dr. Smith&quot;</p>
                         </div>
                     )}
 
                     {history.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm ${
-                                msg.role === 'user' ? 'bg-teal-600 text-white rounded-tr-none' : 'bg-slate-100 text-slate-800 rounded-tl-none'
-                            }`}>
+                            <div className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm ${msg.role === 'user'
+                                    ? 'bg-teal-600 text-white rounded-tr-none'
+                                    : 'bg-slate-100 text-slate-800 rounded-tl-none'
+                                }`}>
                                 {msg.text}
                             </div>
                         </div>
                     ))}
 
+                    {/* Realtime Input */}
                     {realtimeInput && (
                         <div className="flex justify-end">
                             <div className="max-w-[80%] px-4 py-2 rounded-2xl text-sm bg-teal-600/70 text-white rounded-tr-none animate-pulse">
@@ -302,6 +380,7 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                         </div>
                     )}
 
+                    {/* Realtime Output */}
                     {realtimeOutput && (
                         <div className="flex justify-start">
                             <div className="max-w-[80%] px-4 py-2 rounded-2xl text-sm bg-slate-100/70 text-slate-800 rounded-tl-none">
@@ -313,24 +392,33 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
 
                 {/* Controls */}
                 <div className="p-6 bg-slate-50 border-t border-slate-200 shrink-0 flex items-center justify-center space-x-6">
-                    <button 
-                        className="p-3 rounded-full bg-red-100 text-red-500 hover:bg-red-200 transition-colors"
+                    {/* End Call Button */}
+                    <div
+                        className={`p-3 rounded-full transition-all duration-300 bg-red-100 text-red-500 hover:bg-red-200 cursor-pointer`}
                         onClick={onClose}
+                        title="End Call"
                     >
                         <PhoneOff size={24} />
-                    </button>
+                    </div>
 
-                    <button
-                        className={`p-5 rounded-full shadow-lg transition-all border-4 flex items-center justify-center ${
-                            status === 'connected' 
-                            ? (isPaused ? 'bg-amber-100 text-amber-500 border-amber-200' : 'bg-teal-500 text-white border-teal-200')
-                            : 'bg-slate-200 text-slate-400 border-transparent'
-                        }`}
+                    {/* Play/Pause Toggle Button */}
+                    <div
+                        className={`p-5 rounded-full shadow-lg transition-all duration-500 border-4 cursor-pointer flex items-center justify-center 
+                 ${status === 'connected'
+                                ? (isPaused
+                                    ? 'bg-amber-100 text-amber-500 border-amber-200 hover:scale-105' // Paused state
+                                    : 'bg-teal-500 text-white border-teal-200 hover:scale-105 shadow-teal-200' // Active state
+                                )
+                                : 'bg-slate-200 text-slate-400 border-transparent cursor-not-allowed'
+                            }`}
                         onClick={status === 'connected' ? togglePause : undefined}
+                        title={isPaused ? "Resume Assistant" : "Pause Assistant"}
                     >
-                        {status !== 'connected' ? <Mic size={28} /> : (isPaused ? <Play size={28} /> : <Pause size={28} />)}
-                    </button>
+                        {/* Show Play icon if paused, Pause icon if active. Loading if not connected */}
+                        {status !== 'connected' ? <Mic size={28} /> : (isPaused ? <Play size={28} className="ml-1" /> : <Pause size={28} />)}
+                    </div>
                 </div>
+
             </div>
         </div>
     );
