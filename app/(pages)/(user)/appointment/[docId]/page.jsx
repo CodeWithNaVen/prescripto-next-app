@@ -1,5 +1,7 @@
+// app/(pages)/(user)/appointment/[docId]/page.jsx
 'use client';
 import { assets } from '@/assets/assets';
+import DoctorRating from '@/components/UserComponents/DoctorRating';
 import PatientMediaUpload from '@/components/UserComponents/PatientMediaUpload';
 import RelatedDoctorSection from '@/components/UserComponents/RelatedDoctorSection';
 import { useAppContext } from '@/context/AppContext';
@@ -170,7 +172,11 @@ const page = ({params}) => {
             <p className='text-sm text-gray-600 max-w-[700px] mt-1'>{docInfo.about}</p>
           </div>
 
-          <p className='text-gray-600 font-medium mt-4'>Appointment: <span className='text-gray-800'>{currencySymbol}{docInfo.fees}</span></p>
+          <p className='text-gray-600 font-medium mt-4'>Appointment Fee: <span className='text-gray-800'>{currencySymbol}{docInfo.fees}</span></p>
+
+          {/* doctor rating component here */}
+          <DoctorRating docId={docInfo._id} />
+
         </div>
       </div>
 

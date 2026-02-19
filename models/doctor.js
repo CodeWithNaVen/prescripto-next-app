@@ -24,6 +24,12 @@ const doctorSchema = new mongoose.Schema({
     date:{type:Number, required:true},
     slots_booked:{type:Object, default:{}},
     role:{type:String, default:"doctor"},
+
+    // for user rating
+    ratings: {
+        average: { type: Number, default: 0 },
+        count: { type: Number, default: 0 }
+    }
 },{timestamps:true, minimize:false});// minimize false also allows to empty object
 
 const doctorModel = mongoose.models.Doctor || mongoose.model("Doctor", doctorSchema);

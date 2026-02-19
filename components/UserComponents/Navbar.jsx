@@ -164,13 +164,13 @@ const Navbar = () => {
         </Link>
 
         {/* assistant triggerd button */}
-        <button
+        {user && <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          className="flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
           <Phone size={20} />
           <span className="font-semibold">Talk to Assistant</span>
-        </button>
+        </button>}
       </ul>
 
       {/* menu toggle + mobile menu container */}

@@ -7,6 +7,7 @@
 
 @theme{
   --color-primary: #5f6FFF;
+  /* --color-primary: teal; */
   --color-secondary: green;
   --auto: repeat(auto-fill, minmax(200px, 1fr));
 }

@@ -21,7 +21,13 @@ const appointmentSchema = new mongoose.Schema({
 
     //paid or not
     paymentType:{type:String, default:"cash", enum:["cash", "online"]},
-    payment:{type:Boolean, default:false}
+    payment:{type:Boolean, default:false},
+
+    // rating
+    // rating details
+    isRated: { type: Boolean, default: false },
+    rating: { type: Number }
+    
 },{timestamps:true});
 
 const appointmentModel = mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
