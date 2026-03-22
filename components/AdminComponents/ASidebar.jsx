@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { adminAssets } from '@/assets/admin_assets/adminAssets';
 import Image from 'next/image';
+import { SparklesIcon } from 'lucide-react';
 
 const sidebarItems = [
   {
@@ -16,9 +17,14 @@ const sidebarItems = [
     icon: adminAssets.appointment_icon
   },
   {
+    label: 'AI Appointments',
+    path: '/admin/ai-appointments',
+    img : SparklesIcon
+  },
+  {
     label: 'Add Doctor',
     path: '/admin/add-doctor',
-    icon: adminAssets.add_icon
+    icon: adminAssets.add_icon,
   },
   {
     label: 'Doctors List',
@@ -39,7 +45,7 @@ const ASidebar = () => {
               href={item.path}
               className={`flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 cursor-pointer ${pathname === item.path ? 'bg-[#F2F3FF] border-r-4 border-primary' : ''}`}
             >
-              <Image src={item.icon} width={25} height={25} alt={item.label} />
+              { item.img ? <item.img width={25} height={25} /> : <Image src={item.icon} width={25} height={25} alt={item.label} />}
               <p className="hidden md:block">{item.label}</p>
             </Link>
           </li>

@@ -143,6 +143,13 @@ const page = ({params}) => {
     getAvailableSlot();
   }, [docInfo]);
 
+  // redirect to login if not logged in
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user]);
+
   return docInfo && (
     <div className='mx-4 my-8 sm:mx-[10%] space-y-20'>
       {/* doctor details */}

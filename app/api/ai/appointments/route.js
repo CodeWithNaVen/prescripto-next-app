@@ -1,14 +1,59 @@
+// app/api/ai/appointments/route.js
 import connectDB from '@/lib/db';
 import Appointment from '@/models/aiAppointment';
 import { NextResponse } from 'next/server';
 
 // GET - Fetch all appointments
-export async function GET() {
+// export async function GET() {
+//   try {
+//     await connectDB();
+    
+//     const appointments = await Appointment.find({})
+//       .sort({ createdAt: -1 })
+//       .lean();
+    
+//     const formattedAppointments = appointments.map(appt => ({
+//       id: appt._id.toString(),
+//       patientName: appt.patientName,
+//       doctorName: appt.doctorName,
+//       date: appt.date,
+//       symptom: appt.symptom,
+//       status: appt.status,
+//       createdAt: appt.createdAt,
+//       updatedAt: appt.updatedAt
+//     }));
+
+//     return NextResponse.json({ 
+//       success: true,
+//       appointments: formattedAppointments 
+//     });
+    
+//   } catch (error) {
+//     console.error('Error fetching appointments:', error);
+//     return NextResponse.json(
+//       { error: 'Failed to fetch appointments' },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// app/api/ai/appointments/route.js
+
+export async function GET(request) {
   try {
     await connectDB();
     
-    const appointments = await Appointment.find({})
-      .sort({ createdAt: -1 })
+    // Get doctorName from search params if it exists
+    const { searchParams } = new URL(request.url);
+    const doctorFilter = searchParams.get('doctor');
+    
+    console.log(doctorFilter);
+    
+    // Build query
+    const query = doctorFilter ? { doctorName: doctorFilter } : {};
+    
+    const appointments = await Appointment.find(query)
+      .sort({ date: 1 }) // Sort by appointment date for doctors
       .lean();
     
     const formattedAppointments = appointments.map(appt => ({
@@ -18,21 +63,11 @@ export async function GET() {
       date: appt.date,
       symptom: appt.symptom,
       status: appt.status,
-      createdAt: appt.createdAt,
-      updatedAt: appt.updatedAt
     }));
 
-    return NextResponse.json({ 
-      success: true,
-      appointments: formattedAppointments 
-    });
-    
+    return NextResponse.json({ success: true, appointments: formattedAppointments });
   } catch (error) {
-    console.error('Error fetching appointments:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch appointments' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
 
@@ -179,3 +214,5 @@ export async function PATCH(request) {
     );
   }
 }
+
+

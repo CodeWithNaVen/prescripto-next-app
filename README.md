@@ -75,3 +75,5 @@ Frontend:
             line2: 'Circle, Ring Road, London'
         }
     },
+
+    // will be working on the ui and brand changing part

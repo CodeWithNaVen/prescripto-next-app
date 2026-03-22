@@ -48,7 +48,7 @@ const AllAppointments = () => {
               <Image src={item.userData.profileImage} width={40} height={40} alt="" className='w-8 rounded-full border border-gray-200' />
               <p>{item.userData.name}</p>
             </div>
-            <p className='max-sm:hidden'>{calculateAge(item.userData.dob)}</p>
+            <p className='max-sm:hidden'>{item.userData.dob !== "Not Selected" && calculateAge(item.userData.dob)}</p>
             <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
 
             <div className='flex items-center gap-2'>
