@@ -7,7 +7,7 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Prescripto",
+  title: "NexCare",
   description: "A best online appointment booking platform",
 };
 
