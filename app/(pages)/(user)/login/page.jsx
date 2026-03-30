@@ -67,7 +67,7 @@ const LoginPage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-primary"
                         placeholder="Enter your email"
                         required
                     />
@@ -80,10 +80,17 @@ const LoginPage = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-primary"
                         placeholder="Enter your password"
                         required
                     />
+                    </div>
+
+                    {/* {forgot password link */}
+                    <div className="text-right">
+                    <Link href="/forgot-password" className="text-sm text-red-500 hover:underline">
+                        Forgot Password?
+                    </Link>
                     </div>
 
                     <button
