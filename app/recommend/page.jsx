@@ -9,7 +9,8 @@ const commonSymptoms = [
   "spotting_urination", "fatigue", "weight_gain", "anxiety", 
   "cold_hands_and_feets", "mood_swings", "weight_loss", "restlessness", 
   "lethargy", "patches_in_throat", "irregular_sugar_level", "cough", 
-  "high_fever", "sunken_eyes", "breathlessness", "sweating", "dehydration"
+  "high_fever", "sunken_eyes", "breathlessness", "sweating", "dehydration", "indigestion", "pain_behind_the_eyes",
+  "back_pain", "constipation", "abdominal_pain", "diarrhoea", "mild_fever", "yellow_urine", "yellowing_of_eyes", "extra_marital_contacts", "headache", "red_spots_over_body"
 ];
 
 export default function RecommendationPage() {

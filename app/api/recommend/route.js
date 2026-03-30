@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-// import connectDB from "@/lib/db";
+import connectDB from "@/lib/db";
 import doctorModel from "@/models/doctor";
 
 // Map Python's disease names to your Doctor specialties
@@ -50,7 +50,10 @@ const diseaseToSpecialty = {
 export async function POST(req) {
     try {
         const { symptoms } = await req.json(); // symptoms: ["itching", "skin_rash"]
-        // await connectDB();
+        await connectDB();
+
+        console.log("⭐⭐⭐", symptoms);
+        
 
         // 1. Send request to your LOCAL Python server
         const response = await fetch("http://127.0.0.1:5000/predict", {
@@ -59,11 +62,13 @@ export async function POST(req) {
             body: JSON.stringify({ symptoms })
         });
 
+        
         if (!response.ok) throw new Error("Python server is not responding");
-
+        
         const pythonData = await response.json();
         const predictedDisease = pythonData.disease;
-
+        
+        console.log("⭐⛔⛔", pythonData);
         // 2. Determine specialty
         const specialty = diseaseToSpecialty[predictedDisease] || "General Physician";
 
@@ -75,6 +80,8 @@ export async function POST(req) {
             ...doc,
             recommendationScore: (doc.ratings.average * 10) + (doc.experience.length * 2)
         })).sort((a, b) => b.recommendationScore - a.recommendationScore);
+
+        console.log("⛔⛔", predictedDisease, specialty, rankedDoctors);
 
         return NextResponse.json({
             success: true,
