@@ -13,7 +13,7 @@ const SpecialityMenu = () => {
         <h1 className='text-3xl font-medium'>Find by Speciality</h1>
         <p className='text-sm w-1/3 text-center'>Simply browse through our extensive list of trusted doctors, schedule your appointment hassle-free.</p>
 
-        <div className='flex sm:justify-center gap-4 pt-5 w-full overflow-auto overflow-y-scroll scrollbar-hidden'>
+        <div className='grid grid-cols-3 md:grid-cols-6 sm:justify-center gap-4 pt-5 w-full overflow-auto overflow-y-scroll scrollbar-hidden'>
             {specialityData.map((item, index)=>(  
                 <div onClick={() =>{ setSpeciality(item.speciality); router.push('/doctors');}} key={index} className='flex flex-col items-center text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500'>
                     <Image src={item.image} alt="" className='w-16 sm:w-24 mb-2'/>

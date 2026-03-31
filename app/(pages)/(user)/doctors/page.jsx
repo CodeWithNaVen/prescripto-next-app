@@ -90,6 +90,55 @@ const Doctors = () => {
           <p onClick={() => setSpeciality('Gastroenterologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Gastroenterologist" && 'bg-blue-200'}`}>
             Gastroenterologist
           </p>
+          {/* add more specialities */}
+          <p onClick={() => setSpeciality('Cardiologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Cardiologist" && 'bg-blue-200'}`}>
+            Cardiologist
+          </p>
+
+          <p onClick={() => setSpeciality('Pulmonologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Pulmonologist" && 'bg-blue-200'}`}>
+            Pulmonologist
+          </p>
+          <p onClick={() => setSpeciality('Orthopedist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Orthopedist" && 'bg-blue-200'}`}>
+            Orthopedist
+          </p>
+
+          <p onClick={() => setSpeciality('Urologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Urologist" && 'bg-blue-200'}`}>
+            Urologist
+          </p>
+          <p onClick={() => setSpeciality('Psychiatrist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Psychiatrist" && 'bg-blue-200'}`}>
+            Psychiatrist
+          </p>
+          <p onClick={() => setSpeciality('Hepatologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Hepatologist" && 'bg-blue-200'}`}>
+            Hepatologist
+          </p>
+          <p onClick={() => setSpeciality('Nephrologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Nephrologist" && 'bg-blue-200'}`}>
+            Nephrologist
+          </p>
+          <p onClick={() => setSpeciality('ENT')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "ENT" && 'bg-blue-200'}`}>
+            ENT
+          </p>
+          <p onClick={() => setSpeciality('Oncologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Oncologist" && 'bg-blue-200'}`}>
+            Oncologist
+          </p>
+          <p onClick={() => setSpeciality('Phlebologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Phlebologist" && 'bg-blue-200'}`}>
+            Phlebologist
+          </p>
+          <p onClick={() => setSpeciality('Ophthalmologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Ophthalmologist" && 'bg-blue-200'}`}>
+            Ophthalmologist
+          </p>
+          <p onClick={() => setSpeciality('Rheumatologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Rheumatologist" && 'bg-blue-200'}`}>
+            Rheumatologist
+          </p>
+          <p onClick={() => setSpeciality('InfectiousDisease')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "InfectiousDisease" && 'bg-blue-200'}`}>
+            InfectiousDisease
+          </p>
+          <p onClick={() => setSpeciality('Proctologist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Proctologist" && 'bg-blue-200'}`}>
+            Proctologist
+          </p>
+          <p onClick={() => setSpeciality('Allergist')} className={`w-[94vw] sm:w-auto px-8 py-3 hover:bg-blue-200 border-2 border-primary cursor-pointer rounded-md transition-all duration-300 ${speciality === "Allergist" && 'bg-blue-200'}`}>
+            Allergist
+          </p>
+          
         </div>
 
         {/* right side */}

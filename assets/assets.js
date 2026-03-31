@@ -33,12 +33,30 @@ import chats_icon from './chats.svg';
 import verified_icon from './verified.svg';
 import arrow_icon from './arrow.svg';
 import info_icon from './info.svg';
+
 import Dermatologist from './Dermatologist.svg';
 import Gastroenterologist from './Gastroenterologist.svg';
 import Generalphysician from './Generalphysician.svg';
 import Gynecologist from './Gynecologist.svg';
 import Neurologist from './Neurologist.svg';
 import Pediatricians from './Pediatricians.svg';
+
+
+import Cardiologist from './Cardiologist.png';
+import Pulmonologist from './Pulmonologist.png';
+import Orthopedist from './Orthopedist.png';
+import Urologist from './Urologist.png';
+import Psychiatrist from './Psychiatrist.png';
+import Hepatologist from './Hepatologist.png';
+import Nephrologist from './Nephrologist.png';
+import ENT from './ENT.png';
+import Oncologist from './Oncologist.png';
+import Phlebologist from './Nephrologist.png';
+import Ophthalmologist from './Ophthalmologist.png';
+import Rheumatologist from './Rheumatologist.png'
+import InfectiousDisease from './Infectious_Disease.png';
+import Proctologist from './Proctologist.png';
+import Allergist from './Allergist.png';
 
 
 export const assets = {
@@ -60,93 +78,94 @@ export const assets = {
   AddIcon,
 };
 
-// export const specialityData = [
-//     {
-//         speciality: 'General Physician', //✅
-//         image: Generalphysician
-//     },
-//     {
-//         speciality: 'Gynecologist', //✅
-//         image: Gynecologist
-//     },
-//     {
-//         speciality: 'Dermatologist', //✅
-//         image: Dermatologist
-//     },
-//     {
-//         speciality: 'Pediatrician', //✅
-//         image: Pediatricians
-//     },
-//     {
-//         speciality: 'Neurologist', //✅
-//         image: Neurologist
-//     },
-//     {
-//         speciality: 'Gastroenterologist', //✅
-//         image: Gastroenterologist
-//     },
-    // {
-    //     speciality: 'Cardiologist',
-    //     image: Cardiologist
-    // },
-    // {
-    //     speciality: 'Pulmonologist',
-    //     image: Pulmonologist
-    // },
-    // {
-    //     speciality: 'Orthopedist',
-    //     image: Orthopedist
-    // },
-    // {
-    //     speciality: 'Rheumatologist',
-    //     image: Rheumatologist
-    // },
-    // {
-    //     speciality: 'Urologist',
-    //     image: Urologist
-    // },
-    // {
-    //     speciality: 'Proctologist',
-    //     image: Proctologist
-    // },
-    // {
-    //     speciality: 'Phlebologist',
-    //     image: Phlebologist
-    // },
-    // {
-    //     speciality: 'Ophthalmologist',
-    //     image: Ophthalmologist
-    // },
-    // {
-    //     speciality: 'ENT Specialist',
-    //     image: ENT
-    // },
-    // {
-    //     speciality: 'Psychiatrist',
-    //     image: Psychiatrist
-    // },
-    // {
-    //     speciality: 'Hepatologist',
-    //     image: Hepatologist
-    // },
-    // {
-    //     speciality: 'Nephrologist',
-    //     image: Nephrologist
-    // },
-    // {
-    //     speciality: 'Infectious Disease Specialist',
-    //     image: InfectiousDisease
-    // },
-    // {
-    //     speciality: 'Oncologist',
-    //     image: Oncologist
-    // },
-    // {
-    //     speciality: 'Allergist',
-    //     image: Allergist
-    // }
-// ];
+export const specialityData = [
+    {
+        speciality: 'General Physician', //✅
+        image: Generalphysician
+    },
+    {
+        speciality: 'Gynecologist', //✅
+        image: Gynecologist
+    },
+    {
+        speciality: 'Dermatologist', //✅
+        image: Dermatologist
+    },
+    {
+        speciality: 'Pediatrician', //✅
+        image: Pediatricians
+    },
+    {
+        speciality: 'Neurologist', //✅
+        image: Neurologist
+    },
+    {
+        speciality: 'Gastroenterologist', //✅
+        image: Gastroenterologist
+    },
+    {
+        speciality: 'Cardiologist',
+        image: Cardiologist
+    },
+    {
+        speciality: 'Pulmonologist',
+        image: Pulmonologist
+    },
+    {
+        speciality: 'Orthopedist',
+        image: Orthopedist
+    },
+    {
+        speciality: 'Rheumatologist',
+        image: Rheumatologist
+    },
+    {
+        speciality: 'Urologist',
+        image: Urologist
+    },
+    {
+        speciality: 'Proctologist',
+        image: Proctologist
+    },
+    {
+        speciality: 'Phlebologist',
+        image: Phlebologist
+    },
+    {
+        speciality: 'Ophthalmologist',
+        image: Ophthalmologist
+    },
+    {
+        speciality: 'ENT Specialist',
+        image: ENT
+    },
+    {
+        speciality: 'Psychiatrist',
+        image: Psychiatrist
+    },
+    {
+        speciality: 'Hepatologist',
+        image: Hepatologist
+    },
+    {
+        speciality: 'Nephrologist',
+        image: Nephrologist
+    },
+    {
+        speciality: 'Infectious Disease Specialist',
+        image: InfectiousDisease
+    },
+    {
+        speciality: 'Oncologist',
+        image: Oncologist
+    },
+    {
+        speciality: 'Allergist',
+        image: Allergist
+    }
+];
 
+/*
 export const specialityData = [
     {
         speciality: 'General physician',
@@ -173,6 +192,9 @@ export const specialityData = [
         image: Gastroenterologist
     },
 ]
+
+*/
+
 
 // export const doctors = [
 //     {
