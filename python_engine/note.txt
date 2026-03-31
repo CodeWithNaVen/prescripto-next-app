@@ -1,0 +1,15 @@
+import pandas as pd
+import os
+
+# base_path = os.path.dirname(os.path.abspath(__file__))
+# training_path = os.path.join(base_path, "Training.csv")
+
+# training_path = pd.read_csv('Training.csv')
+
+df = pd.read_csv('Training.csv')
+
+# Print all symptom column names
+symptoms = df.drop("prognosis", axis=1).columns.tolist()
+
+print("Total Symptoms:", len(symptoms))
+print(symptoms)
