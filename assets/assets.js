@@ -92,7 +92,7 @@ export const specialityData = [
         image: Dermatologist
     },
     {
-        speciality: 'Pediatrician', //✅
+        speciality: 'Pediatricians', //✅
         image: Pediatricians
     },
     {

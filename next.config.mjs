@@ -9,7 +9,8 @@ const nextConfig = {
         remotePatterns: [
             { protocol: 'https', hostname: 'res.cloudinary.com' },
             { protocol: 'https', hostname: 'media4.giphy.com' },
-            { protocol: 'https', hostname: 'picsum.photos' }
+            { protocol: 'https', hostname: 'picsum.photos' },
+            { protocol: 'https', hostname: 'randomuser.me' },
         ]
     }
 };
