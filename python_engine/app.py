@@ -1,37 +1,60 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # Import CORS
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+from flask_cors import CORS
 import numpy as np
+import pickle
 import os
 
 app = Flask(__name__)
-CORS(app) # This allows your Next.js app to talk to this API
+CORS(app)
 
-# Load data using absolute paths to avoid "File Not Found" errors
 base_path = os.path.dirname(os.path.abspath(__file__))
-training_path = os.path.join(base_path, 'Training.csv')
 
-training_data = pd.read_csv(training_path)
-X = training_data.drop('prognosis', axis=1)
-y = training_data['prognosis']
+# Load trained model
+model = pickle.load(open(os.path.join(base_path, "model.pkl"), "rb"))
+columns = pickle.load(open(os.path.join(base_path, "columns.pkl"), "rb"))
 
-model = DecisionTreeClassifier()
-model.fit(X, y)
+@app.route("/")
+def home():
+    return {"message": "NexCare ML API Running"}
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
-    user_symptoms = data.get('symptoms', [])
-    
-    input_vector = np.zeros(len(X.columns))
-    for symptom in user_symptoms:
-        if symptom in X.columns:
-            idx = X.columns.get_loc(symptom)
-            input_vector[idx] = 1
-            
-    prediction = model.predict([input_vector])[0]
-    return jsonify({"disease": prediction})
+    try:
+        data = request.json
+        user_symptoms = data.get("symptoms", [])
 
-if __name__ == '__main__':
+        if not isinstance(user_symptoms, list):
+            return jsonify({"error": "Symptoms must be a list"}), 400
+
+        input_vector = np.zeros(len(columns))
+        unknown_symptoms = []
+
+        for symptom in user_symptoms:
+            if symptom in columns:
+                idx = columns.index(symptom)
+                input_vector[idx] = 1
+            else:
+                unknown_symptoms.append(symptom)
+
+        # Predict probabilities
+        probs = model.predict_proba([input_vector])[0]
+        top_indices = np.argsort(probs)[-3:][::-1]
+
+        top_predictions = [
+            {
+                "disease": model.classes_[i],
+                "confidence": float(probs[i])
+            }
+            for i in top_indices
+        ]
+
+        return jsonify({
+            "top_predictions": top_predictions,
+            "ignored_symptoms": unknown_symptoms
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
     app.run(port=5000, debug=True)

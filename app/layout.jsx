@@ -1,5 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import SymptomAIWidget from "@/components/UserComponents/SymptomAIWidget";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -14,7 +15,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={outfit.className}>{children}</body>
+      <body className={outfit.className}>
+        {children}
+        <SymptomAIWidget />
+      </body>
     </html>
   );
 }

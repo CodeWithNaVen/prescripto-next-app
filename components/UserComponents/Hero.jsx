@@ -15,7 +15,7 @@ const Hero = () => {
         {/* Left Side: Content */}
         <div className="flex flex-col items-start justify-center flex-1 gap-6 px-8 py-16 sm:px-12 md:px-16 lg:pl-20">
           
-          <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl tracking-tight">
+          <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl tracking-tight">
             Book appointment <br className="hidden sm:block" /> 
             <span className="opacity-90">with trusted doctors</span>
           </h1>
@@ -32,20 +32,35 @@ const Hero = () => {
               Simply browse through our extensive list of trusted doctors and schedule your visit hassle-free.
             </p>
           </div>
+          <div className='flex items-center gap-2'>
+             <Link 
+              href="/recommend" 
+              className="group flex items-center gap-3 bg-white px-8 py-4 rounded-full text-primary font-semibold text-sm transition-all hover:bg-blue-50 hover:shadow-lg active:scale-95"
+            >
+              Check Symptoms Now
+              <Image 
+                src={assets.arrow_icon} 
+                width={16} 
+                height={16} 
+                alt="Arrow" 
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
 
-          <Link 
-            href="#speciality" 
-            className="group flex items-center gap-3 bg-white px-8 py-4 rounded-full text-primary font-semibold text-sm transition-all hover:bg-blue-50 hover:shadow-lg active:scale-95"
-          >
-            Book appointment
-            <Image 
-              src={assets.arrow_icon} 
-              width={16} 
-              height={16} 
-              alt="Arrow" 
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </Link>
+            <Link 
+              href="#speciality" 
+              className="group flex items-center gap-3 bg-white px-8 py-4 rounded-full text-primary font-semibold text-sm transition-all hover:bg-blue-50 hover:shadow-lg active:scale-95"
+            >
+              Book appointment
+              <Image 
+                src={assets.arrow_icon} 
+                width={16} 
+                height={16} 
+                alt="Arrow" 
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
+          </div>
         </div>
 
         {/* Right Side: Image */}

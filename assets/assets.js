@@ -60,6 +60,93 @@ export const assets = {
   AddIcon,
 };
 
+// export const specialityData = [
+//     {
+//         speciality: 'General Physician', //✅
+//         image: Generalphysician
+//     },
+//     {
+//         speciality: 'Gynecologist', //✅
+//         image: Gynecologist
+//     },
+//     {
+//         speciality: 'Dermatologist', //✅
+//         image: Dermatologist
+//     },
+//     {
+//         speciality: 'Pediatrician', //✅
+//         image: Pediatricians
+//     },
+//     {
+//         speciality: 'Neurologist', //✅
+//         image: Neurologist
+//     },
+//     {
+//         speciality: 'Gastroenterologist', //✅
+//         image: Gastroenterologist
+//     },
+    // {
+    //     speciality: 'Cardiologist',
+    //     image: Cardiologist
+    // },
+    // {
+    //     speciality: 'Pulmonologist',
+    //     image: Pulmonologist
+    // },
+    // {
+    //     speciality: 'Orthopedist',
+    //     image: Orthopedist
+    // },
+    // {
+    //     speciality: 'Rheumatologist',
+    //     image: Rheumatologist
+    // },
+    // {
+    //     speciality: 'Urologist',
+    //     image: Urologist
+    // },
+    // {
+    //     speciality: 'Proctologist',
+    //     image: Proctologist
+    // },
+    // {
+    //     speciality: 'Phlebologist',
+    //     image: Phlebologist
+    // },
+    // {
+    //     speciality: 'Ophthalmologist',
+    //     image: Ophthalmologist
+    // },
+    // {
+    //     speciality: 'ENT Specialist',
+    //     image: ENT
+    // },
+    // {
+    //     speciality: 'Psychiatrist',
+    //     image: Psychiatrist
+    // },
+    // {
+    //     speciality: 'Hepatologist',
+    //     image: Hepatologist
+    // },
+    // {
+    //     speciality: 'Nephrologist',
+    //     image: Nephrologist
+    // },
+    // {
+    //     speciality: 'Infectious Disease Specialist',
+    //     image: InfectiousDisease
+    // },
+    // {
+    //     speciality: 'Oncologist',
+    //     image: Oncologist
+    // },
+    // {
+    //     speciality: 'Allergist',
+    //     image: Allergist
+    // }
+// ];
+
 export const specialityData = [
     {
         speciality: 'General physician',
