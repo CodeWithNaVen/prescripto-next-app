@@ -1,4 +1,3 @@
-# nexcare/python_engine/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
@@ -10,9 +9,12 @@ CORS(app)
 
 base_path = os.path.dirname(os.path.abspath(__file__))
 
-# Load trained model
-model = pickle.load(open(os.path.join(base_path, "model.pkl"), "rb"))
-columns = pickle.load(open(os.path.join(base_path, "columns.pkl"), "rb"))
+# Load trained model & columns
+model_path = os.path.join(base_path, "model.pkl")
+columns_path = os.path.join(base_path, "columns.pkl")
+
+model = pickle.load(open(model_path, "rb"))
+columns = pickle.load(open(columns_path, "rb"))
 
 @app.route("/")
 def home():
@@ -57,10 +59,6 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# if __name__ == "__main__":
-#     app.run(port=5000, debug=True)
-
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
