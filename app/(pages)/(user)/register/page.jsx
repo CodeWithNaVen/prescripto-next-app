@@ -5,6 +5,8 @@ import axios from "axios";
 import { useAppContext } from "@/context/AppContext";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { assets } from "@/assets/assets";
 
 const RegisterPage = () => {
     const { user, router, loadingUser } = useAppContext();
@@ -57,9 +59,18 @@ const RegisterPage = () => {
     <>
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-          <h2 className="text-2xl font-semibold mb-6 text-center">
+          {/* logo */}
+          <Image 
+            src={assets.logo}
+            alt="Logo"
+            width={1000}
+            height={1000}
+            className="mx-auto h-12 w-auto mb-6"
+          />
+          <h2 className="text-2xl font-semibold text-center">
             Create Account
           </h2>
+          <p className="text-gray-600 text-center mb-3">Create an account to access all the features</p>
 
           {errorMsg && (
             <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>

@@ -55,7 +55,16 @@ const LoginPage = () => {
 
             <div className="flex items-center justify-center min-h-screen px-4 ">
                 <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-                <h2 className="text-2xl font-semibold mb-6 text-center">User Login</h2>
+                    {/* logo */}
+                    <Image 
+                        src={assets.logo}
+                        alt="Logo"
+                        width={1000}
+                        height={1000}
+                        className="mx-auto h-12 w-auto mb-6"
+                    />
+                <h2 className="text-2xl font-semibold text-center">Patient Login</h2>
+                <p className="text-gray-600 text-center">Login to access your account</p>
 
                 {errorMsg && <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>}
 

@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useAdminAppContext } from '@/context/AdminAppContext';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
+import { assets } from '@/assets/assets';
 
 const AdminLoginPage = () => {
   const { admin, router, getAdminProfile } = useAdminAppContext();
@@ -59,7 +61,16 @@ const AdminLoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
         <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Admin Login</h2>
+          {/* logo */}
+            <Image 
+              src={assets.logo}
+              alt="Logo"
+              width={1000}
+              height={1000}
+              className="mx-auto h-12 w-auto mb-6"
+            />
+            <h2 className="text-2xl font-semibold text-center">Admin Login</h2>
+            <p className="text-gray-600 mb-3 text-center">Login using your credentials to access your dashboard</p>
 
             {errorMsg && <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>}
 
@@ -99,7 +110,7 @@ const AdminLoginPage = () => {
             <p className="mt-4 text-sm text-center">
             Are you a Doctor?{' '}
             <Link href="/doctor/login" className="text-primary">
-                login now
+                Login now
             </Link>
             </p>
         </div>

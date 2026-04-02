@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 
 import { useDoctorAppContext } from '@/context/DoctorAppContext';
+import Image from 'next/image';
+import { assets } from '@/assets/assets';
 
 const DoctorLoginPage = () => {
   const { doctor, router, axios} = useDoctorAppContext();
@@ -50,7 +52,17 @@ const DoctorLoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
       <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Doctor Login</h2>
+        {/* logo */}
+        <Image 
+          src={assets.logo}
+          alt="Logo"
+          width={1000}
+          height={1000}
+          className="mx-auto h-12 w-auto mb-6"
+        />
+
+        <h2 className="text-2xl font-semibold text-center">Doctor Login</h2>
+        <p className="text-gray-600 mb-3 text-center">Login using your credentials to access your dashboard</p>
 
         {errorMsg && <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>}
 
@@ -85,6 +97,20 @@ const DoctorLoginPage = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+
+          {/* forgot password */}
+          <p className="text-sm text-end">
+            <a href="/forgot-password" className="text-red-500 hover:underline">
+              Forgot Password?
+            </a>
+          </p>
+
+          <p className="text-center text-sm">
+            Are you a patient?{' '}
+            <a href="/login" className="text-primary hover:underline">
+              Login
+            </a>
+          </p>
         </form>
       </div>
     </div>
