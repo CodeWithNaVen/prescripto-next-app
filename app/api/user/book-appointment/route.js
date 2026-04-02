@@ -54,12 +54,12 @@ export const POST = async(req)=>{
         }
 
         //save the appointment
-        await appointmentModel.create(appointmentData);
+        const newAppointment = await appointmentModel.create(appointmentData);
 
         //update the slots date now(free slots after booking)
         await doctorModel.findByIdAndUpdate(docId, {slots_booked});
         
-        return NextResponse.json({success:true, message: "Appointment booked successfully"}, {status: 200});
+        return NextResponse.json({success:true, message: "Appointment booked successfully", appointment: newAppointment}, {status: 200});
 
     } catch (error) {
         console.log(error.message);

@@ -5,6 +5,7 @@ import DoctorRating from '@/components/UserComponents/DoctorRating';
 import PatientMediaUpload from '@/components/UserComponents/PatientMediaUpload';
 import RelatedDoctorSection from '@/components/UserComponents/RelatedDoctorSection';
 import { useAppContext } from '@/context/AppContext';
+import { generateReceipt } from '@/lib/generateReceipt';
 import Image from 'next/image';
 import React, { use, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -90,14 +91,12 @@ const page = ({params}) => {
     }
   }
 
-
   // book appointment logic
-  const bookAppointment = async () =>{
-    if(!user){
+  const bookAppointment = async () => {
+    if (!user) {
       toast.error('Please login to book an appointment');
       router.push('/login');
       return;
-
     }
 
     try {
@@ -108,26 +107,37 @@ const page = ({params}) => {
 
       const slotDate = day + "-" + month + "-" + year;
 
-      if(!slotDate){
+      if (!slotDate || !slotTime) {
         toast('🔔 Please select a slot to book appointment');
         return;
       }
 
-      if(!slotTime){
-        toast('🔔 Please select a slot to book appointment');
-        return;
-      }
+      // 1. Make the API Call
+      const res = await axios.post('/api/user/book-appointment', { userId: user._id, docId, slotDate, slotTime });
+      
+      // 2. Extract data from response
+      const data = await res.data; 
 
-      //book appointment
-      const res = await axios.post('/api/user/book-appointment', {userId:user._id, docId, slotDate, slotTime});
-      const data = await res.data;
-
-      if(data.success){
+      if (data.success) {
         toast.success(data.message);
+
+        // FIX: Use data.appointment instead of just appointment
+        console.log("Appointment Data:", data.appointment);
+
+        // 3. Trigger Download Receipt
+        // We pass data.appointment._id which comes from the database via your API
+        await generateReceipt(
+          user, 
+          docInfo, 
+          slotDate, 
+          slotTime, 
+          data.appointment._id 
+        );
+
         fetchAllDoctors(); // Refresh list
         router.push('/my-appointments');
-      }else{
-        toast.error("yey" + data.message);
+      } else {
+        toast.error(data.message);
       }
 
     } catch (error) {
