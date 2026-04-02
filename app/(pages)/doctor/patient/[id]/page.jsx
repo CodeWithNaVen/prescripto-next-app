@@ -14,6 +14,8 @@ export default function PatientViewPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  console.log("Patient ID:", id);
+
   useEffect(() => {
     async function fetchPatient() {
       try {

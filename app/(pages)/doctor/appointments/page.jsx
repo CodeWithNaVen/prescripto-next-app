@@ -81,7 +81,7 @@ const DoctorAppointment = () => {
                 </p>
               </div>
 
-              <p className="max-sm:hidden">{ item.userData.dob && calculateAge(item.userData.dob)}</p>
+              { item.userData?.dob && <p className="max-sm:hidden">{ item.userData?.dob && calculateAge(item.userData.dob)}</p>}
               <p className="text-sm">
                 {slotDateFormat(item.slotDate)} {item.slotTime}
               </p>
