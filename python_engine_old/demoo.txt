@@ -1,0 +1,52 @@
+import pandas as pd
+import os
+
+# base_path = os.path.dirname(os.path.abspath(__file__))
+# training_path = os.path.join(base_path, "Training.csv")
+
+# training_path = pd.read_csv('Training.csv')
+
+df = pd.read_csv('Training.csv')
+
+# Print all symptom column names
+symptoms = df.drop("prognosis", axis=1).columns.tolist()
+
+print("Total Symptoms:", len(symptoms))
+print(symptoms)
+
+
+
+User Input (Symptoms)
+        ↓
+Machine Learning Model
+        ↓
+Predicted Disease
+        ↓
+Mapping Logic
+        ↓
+Doctor Specialty
+        ↓
+Database Query
+        ↓
+Recommended Doctors
+
+# Random Forest classifier
+“The model is trained on a dataset where symptoms are inputs and diseases are outputs.”
+
+
+# Step-by-step:
+Each symptom = feature (1 or 0)
+Model learns patterns like:
+itching + skin rash → Fungal Infection
+chest pain + sweating → Heart Attack
+During prediction:
+User selects symptoms
+Model compares pattern
+Outputs most probable disease
+
+
+recommendationScore =
+  (doc.ratings?.average || 0) * 20 +
+  (doc.experienceYears || 0) * 5 +
+  (doc.totalPatients || 0) * 2 +
+  (pred.confidence * 50)
