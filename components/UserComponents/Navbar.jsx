@@ -58,25 +58,17 @@ const Navbar = () => {
       }
     };
 
-    const handleAppointmentBooked = async (appt) => {
-      console.log("🚀 Frontend received appt from AI:", appt);
+    const handleAppointmentBooked = async () => {
+      console.log("🚀 AI finished booking. Refreshing UI...");
       try {
-        const response = await fetch('/api/ai/appointments', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(appt),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          setAppointments(prev => [data.appointment, ...prev]);
-          console.log('✅ Successfully saved to MongoDB:', data.appointment);
-        } else {
-          console.error('❌ DB Error:', data.error);
-        }
+        // 1. Simply refresh the list of appointments from the server
+        await fetchAppointments(); 
+        
+        // 2. Show a success toast
+        toast.success("Appointment Booked Successfully!");
+        
       } catch (error) {
-        console.error('❌ Network Error:', error);
+        console.error('❌ Error refreshing appointments:', error);
       }
     };
 

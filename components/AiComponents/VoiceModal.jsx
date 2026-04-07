@@ -5,15 +5,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GoogleGenAI, Modality } from "@google/genai";
 import { X, Mic, MessageSquare, PhoneOff, Pause, Play } from 'lucide-react';
 import AudioVisualizer from './AudioVisualizer';
-import { BOOK_APPOINTMENT_TOOL, SYSTEM_INSTRUCTION } from '@/constants';
+import { BOOK_APPOINTMENT_TOOL, generateSystemInstruction, SYSTEM_INSTRUCTION } from '@/constants';
 import { createPcmBlob, decodeAudioData, base64ToUint8Array } from '@/utils/audioUtils';
+import { useAppContext } from '@/context/AppContext';
 
 const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
+    const { doctors } = useAppContext();
+    const SYSTEM_INSTRUCTION = generateSystemInstruction(doctors);
     const [status, setStatus] = useState('idle'); // 'idle' | 'connecting' | 'connected' | 'error'
     const [isAiSpeaking, setIsAiSpeaking] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
 
-    // Transcription State
+    // Transcription Statep
     const [history, setHistory] = useState([]);
     const [realtimeInput, setRealtimeInput] = useState('');
     const [realtimeOutput, setRealtimeOutput] = useState('');
@@ -217,47 +220,122 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                             }
 
                             // Handle Tool Calls (Booking)
+                            // if (message.toolCall) {
+                            //     for (const fc of message.toolCall.functionCalls) {
+                            //         if (fc.name === 'bookAppointment') {
+                            //             console.log('💎 AI requested tool call:', fc.args);
+                            //             const args = fc.args || {};
+
+                            //             // 1. Create the appointment object
+                            //             const newAppt = {
+                            //                 id: Math.random().toString(36).substr(2, 9),
+                            //                 patientName: args.patientName,
+                            //                 doctorName: args.doctorName,
+                            //                 date: args.date,
+                            //                 symptom: args.symptom,
+                            //                 status: 'confirmed'
+                            //             };
+
+                            //             console.log('📝 Triggering DB Save for:', newAppt);
+
+                            //             // 2. IMPORTANT: Call parent function to save to MongoDB
+                            //             // We do this immediately so the DB starts processing
+                            //             onAppointmentBooked(newAppt);
+
+                            //             // 3. Inform Gemini that the tool was executed successfully
+                            //             // FIX: functionResponses MUST be an array []
+                            //             try {
+                            //                 const session = await sessionRef.current;
+                            //                 if (session) {
+                            //                     session.sendToolResponse({
+                            //                         functionResponses: [{ //--- THIS MUST BE AN ARRAY
+                            //                             id: fc.id,
+                            //                             name: fc.name,
+                            //                             response: {
+                            //                                 result: "Success",
+                            //                                 message: "Appointment confirmed and saved to database with ID: " + newAppt.id
+                            //                             }
+                            //                         }]
+                            //                     });
+                            //                     console.log('✅ Sent tool response back to Gemini');
+                            //                 }
+                            //             } catch (err) {
+                            //                 console.error('❌ Failed to send tool response:', err);
+                            //             }
+                            //         }
+                            //     }
+                            // }
+
+                            // Handle Tool Calls (Real Booking)
                             if (message.toolCall) {
+                                const session = await sessionRef.current; // Get current session
+                                
                                 for (const fc of message.toolCall.functionCalls) {
                                     if (fc.name === 'bookAppointment') {
-                                        console.log('💎 AI requested tool call:', fc.args);
-                                        const args = fc.args || {};
+                                        const args = fc.args;
+                                        // --- ADD THIS CHECK ---
+                                        // Ensure we have the minimum required data before calling the API
+                                        if (!args || !args.docId || !args.slotDate) {
+                                            console.warn("💎 AI tried to book but arguments were incomplete yet.");
+                                            return; 
+                                        }
+                                        // ----------------------
+                                        console.log('💎 AI processing real booking for:', args.doctorName);
 
-                                        // 1. Create the appointment object
-                                        const newAppt = {
-                                            id: Math.random().toString(36).substr(2, 9),
-                                            patientName: args.patientName,
-                                            doctorName: args.doctorName,
-                                            date: args.date,
-                                            symptom: args.symptom,
-                                            status: 'confirmed'
-                                        };
-
-                                        console.log('📝 Triggering DB Save for:', newAppt);
-
-                                        // 2. IMPORTANT: Call parent function to save to MongoDB
-                                        // We do this immediately so the DB starts processing
-                                        onAppointmentBooked(newAppt);
-
-                                        // 3. Inform Gemini that the tool was executed successfully
-                                        // FIX: functionResponses MUST be an array []
                                         try {
-                                            const session = await sessionRef.current;
-                                            if (session) {
+                                            // 1. Call your real API Route
+                                            const response = await fetch('/api/ai/appointments', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    patientName: args.patientName,
+                                                    docId: args.docId,        // Sent from tool
+                                                    slotDate: args.slotDate,  // Sent from tool
+                                                    slotTime: args.slotTime,  // Sent from tool
+                                                    symptom: args.symptom,
+                                                    userId: "AI_USER_VOICE"   // Placeholder or from context
+                                                })
+                                            });
+
+                                            // Check if response is okay before parsing JSON
+                                            if (!response.ok) {
+                                                const errorData = await response.json();
+                                                throw new Error(errorData.error || "API Error");
+                                            }
+
+                                            const result = await response.json();
+
+                                            if (result.success) {
+                                                // 2. Notify Gemini the DB is updated
                                                 session.sendToolResponse({
-                                                    functionResponses: [{ //--- THIS MUST BE AN ARRAY
+                                                    functionResponses: [{
                                                         id: fc.id,
                                                         name: fc.name,
-                                                        response: {
-                                                            result: "Success",
-                                                            message: "Appointment confirmed and saved to database with ID: " + newAppt.id
+                                                        response: { 
+                                                            result: "Success", 
+                                                            message: `Appointment confirmed with Dr. ${args.doctorName} for ${args.slotDate} at ${args.slotTime}.` 
                                                         }
                                                     }]
                                                 });
-                                                console.log('✅ Sent tool response back to Gemini');
+                                                
+                                                // 3. Trigger UI Refresh in parent
+                                                if (onAppointmentBooked){ 
+                                                    onAppointmentBooked();
+                                                }
+                                                console.log('✅ DB Updated & Gemini Notified');
+                                                
+                                            } else {
+                                                // 4. Notify Gemini if slot was taken or error occurred
+                                                session.sendToolResponse({
+                                                    functionResponses: [{
+                                                        id: fc.id,
+                                                        name: fc.name,
+                                                        response: { result: "Error", message: result.error || "Slot is unavailable" }
+                                                    }]
+                                                });
                                             }
                                         } catch (err) {
-                                            console.error('❌ Failed to send tool response:', err);
+                                            console.error('❌ Tool execution failed:', err);
                                         }
                                     }
                                 }

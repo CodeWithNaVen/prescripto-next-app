@@ -25,6 +25,8 @@ export const AppContextProvider = ({ children }) => {
 
   const [speciality, setSpeciality] = useState('');
 
+  const [aiDoctors, setAiDoctors] = useState([]);
+
   // Fetch user data on mount
   const getUserProfile = async () => {
       try {
@@ -50,6 +52,7 @@ export const AppContextProvider = ({ children }) => {
 
       if(data.success){
         setDoctors(data.doctors);
+        setAiDoctors(data.aiDoctors);
       }else{
         toast.error(data.message);
       }
@@ -100,7 +103,9 @@ export const AppContextProvider = ({ children }) => {
     fetchUserProfileInfo,
     fetchAllDoctors,
     speciality,
-    setSpeciality
+    setSpeciality,
+    aiDoctors,
+    setAiDoctors
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

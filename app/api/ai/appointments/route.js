@@ -1,6 +1,8 @@
 // app/api/ai/appointments/route.js
 import connectDB from '@/lib/db';
 import Appointment from '@/models/aiAppointment';
+import appointmentModel from '@/models/appointment';
+import doctorModel from '@/models/doctor';
 import { NextResponse } from 'next/server';
 
 // GET - Fetch all appointments
@@ -71,56 +73,80 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new appointment
+// POST - Create new appointment and update doctor slots
 export async function POST(request) {
   try {
     await connectDB();
     
-    const body = await request.json();
+     // --- SAFE JSON PARSING ---
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Empty request body" }, { status: 400 });
+    }
+    // -------------------------
     
-    const { patientName, doctorName, date, symptom, status } = body;
+    // 1. Destructure the NEW fields we are sending from the AI tool
+    const { patientName, docId, slotDate, slotTime, symptom, userId, status } = body;
 
-    // Validate required fields
-    if (!patientName || !doctorName || !date || !symptom) {
+    // 2. Updated Validation: Check for docId, slotDate, and slotTime
+    if (!patientName || !docId || !slotDate || !slotTime || !symptom) {
       return NextResponse.json(
-        { error: 'Missing required fields: patientName, doctorName, date, symptom' },
+        { error: 'Missing required fields: patientName, docId, slotDate, slotTime, symptom' },
         { status: 400 }
       );
     }
+    
+    // 1. Fetch Doctor
+    const doctor = await doctorModel.findById(docId);
+    if (!doctor) return NextResponse.json({ error: 'Doctor not found' }, { status: 404 });
 
-    const appointment = await Appointment.create({
-      patientName,
-      doctorName,
-      date,
-      symptom,
-      status: status || 'confirmed'
+    // 2. Manage Slots (Ensuring we use the Object reference correctly)
+    let current_slots = { ...doctor.slots_booked } || {};
+
+    if (current_slots[slotDate]) {
+        if (current_slots[slotDate].includes(slotTime)) {
+            return NextResponse.json({ error: 'Slot already taken' }, { status: 400 });
+        }
+        current_slots[slotDate].push(slotTime);
+    } else {
+        current_slots[slotDate] = [slotTime];
+    }
+
+    // 3. Update Doctor Model (Crucial for the Web UI to see the slot as booked)
+    // We use findByIdAndUpdate to bypass potential version conflicts
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked: current_slots });
+
+    // 4. Save to main appointmentModel (Matches your JSON structure)
+    const mainAppt = new appointmentModel({
+        userId: userId || "AI_GUEST_USER",
+        docId: docId,
+        slotDate: slotDate,
+        slotTime: slotTime,
+        userData: { name: patientName, phone: "AI Booking" }, // Minimal user data
+        docData: doctor, // Snapshot of doctor data as required by your model
+        amount: doctor.fees,
+        date: Date.now(),
+        symptom: symptom
+    });
+    await mainAppt.save();
+
+    // 5. Save to AI Logs
+    const aiLog = await Appointment.create({
+        patientName,
+        doctorName: doctor.name,
+        date: `${slotDate} at ${slotTime}`,
+        symptom,
+        status: 'confirmed'
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      appointment: {
-        id: appointment._id.toString(),
-        patientName: appointment.patientName,
-        doctorName: appointment.doctorName,
-        date: appointment.date,
-        symptom: appointment.symptom,
-        status: appointment.status,
-        createdAt: appointment.createdAt
-      } 
-    }, { status: 201 });
+    return NextResponse.json({ success: true, appointment: aiLog }, { status: 201 });
     
   } catch (error) {
     console.error('Error creating appointment:', error);
-    
-    if (error.name === 'ValidationError') {
-      return NextResponse.json(
-        { error: 'Validation error', details: error.message },
-        { status: 400 }
-      );
-    }
-    
     return NextResponse.json(
-      { error: 'Failed to create appointment' },
+      { error: 'Internal Server Error', details: error.message },
       { status: 500 }
     );
   }

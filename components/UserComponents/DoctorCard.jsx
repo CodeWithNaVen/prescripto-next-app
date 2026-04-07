@@ -56,7 +56,7 @@ const DoctorCard = ({ doctor }) => {
         router.push(`/appointment/${doctor._id}`);
         scrollTo(0, 0);
       }}
-      className="border border-blue-300 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 group w-max"
+      className="border border-blue-300 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-all duration-300 group max-w-max"
     >
       <Image
         src={doctor.doctorPic}
@@ -79,7 +79,7 @@ const DoctorCard = ({ doctor }) => {
           </span>
         )}
 
-        <p className="text-gray-900 text-lg font-medium">{doctor.name}</p>
+        <p className="text-gray-900 text-lg font-medium line-clamp-1 ">{doctor.name}</p>
         <p className="text-gray-700 text-sm">{doctor.speciality}</p>
 
         {/* ⭐ Rating Display */}
