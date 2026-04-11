@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { symptomCategories } from "@/symptomData.js";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
@@ -26,7 +26,7 @@ export default function RecommendPage() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { axios } = useAppContext();
+  const { axios, user } = useAppContext();
 
   const toggle = (symptom) => {
     setSelected((prev) =>
@@ -41,7 +41,7 @@ export default function RecommendPage() {
     const customSymptoms = custom.split(",").map((s) => s.trim()).filter(Boolean);
     const symptoms = [...new Set([...selected, ...customSymptoms])];
     try {
-      const res = await axios.post("/api/recommend", { symptoms });
+      const res = await axios.post("/api/user/recommend", { symptoms });
       setResult(res.data);
     } catch (error) {
       console.error(error);
@@ -68,6 +68,12 @@ export default function RecommendPage() {
     }
     return stars;
   };
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">

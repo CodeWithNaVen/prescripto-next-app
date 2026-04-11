@@ -1,3 +1,4 @@
+// app/api/recommend/route.js
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import doctorModel from "@/models/doctor";
@@ -7,10 +8,10 @@ const PYTHON_API = process.env.PYTHON_API_URL;
 // Disease → Specialty Mapping
 const diseaseToSpecialty = {
   "Fungal Infection": "Dermatologist",
-  "Allergy": "Allergist/Immunologist",
+  "Allergy": "Dermatologist",
   "GERD": "Gastroenterologist",
   "Chronic Cholestasis": "Gastroenterologist",
-  "Drug Reaction": "Allergist/Immunologist",
+  "Drug Reaction": "Dermatologist",
   "Peptic Ulcer Disease": "Gastroenterologist",
   "AIDS": "Infectious Disease Specialist",
   "Diabetes": "Endocrinologist",
@@ -18,7 +19,7 @@ const diseaseToSpecialty = {
   "Bronchial Asthma": "Pulmonologist",
   "Hypertension": "Cardiologist",
   "Migraine": "Neurologist",
-  "Cervical Spondylosis": "Orthopedic Specialist",
+  "Cervical Spondylosis": "Orthopedist",
   "Paralysis (Brain Hemorrhage)": "Neurologist",
   "Jaundice": "Gastroenterologist",
   "Malaria": "Infectious Disease Specialist",
@@ -40,7 +41,7 @@ const diseaseToSpecialty = {
   "Hypothyroidism": "Endocrinologist",
   "Hyperthyroidism": "Endocrinologist",
   "Hypoglycemia": "Endocrinologist",
-  "Osteoarthritis": "Orthopedic Specialist",
+  "Osteoarthritis": "Orthopedist",
   "Arthritis": "Rheumatologist",
   "Vertigo (Paroxysmal Positional Vertigo)": "Neurologist",
   "Acne": "Dermatologist",
