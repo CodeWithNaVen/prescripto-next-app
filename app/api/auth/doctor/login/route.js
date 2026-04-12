@@ -1,3 +1,4 @@
+// app/api/auth/doctor/login/route.js
 import doctorModel from "@/models/doctor";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -41,6 +42,6 @@ export const POST = async(req)=>{
 
     } catch (error) {
         console.log(error.message);
-        return NextResponse.json({success:false, message: "Failed to login doctor" + error.message}, {status: 500});   
+        return NextResponse.json({success:false, message: "Failed to login doctor"+ error.message}, {status: 500});   
     }
 };

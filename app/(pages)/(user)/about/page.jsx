@@ -14,7 +14,8 @@ import {
   CalendarCheck, 
   Bell, 
   MessageSquare,
-  Quote
+  Quote,
+  ArrowRight
 } from "lucide-react";
 
 const About = () => {
@@ -22,104 +23,105 @@ const About = () => {
 
   const services = [
     {
-      title: "efficiency",
-      desc: "Streamlined scheduling, real-time updates, and optimized health record management.",
-      icon: <Clock className="text-primary" size={24} />,
+      title: "Efficiency",
+      desc: "Streamlined scheduling, real-time updates, and optimized health record management for a faster experience.",
+      icon: <Clock className="text-primary group-hover:text-white" size={24} />,
     },
     {
-      title: "convenience",
-      desc: "Access healthcare from anywhere, anytime — no queues, no waiting rooms.",
-      icon: <MousePointerClick className="text-primary" size={24} />,
+      title: "Convenience",
+      desc: "Access premium healthcare from anywhere, anytime — no more long queues or crowded waiting rooms.",
+      icon: <MousePointerClick className="text-primary group-hover:text-white" size={24} />,
     },
     {
-      title: "safety",
-      desc: "Data security, verified professionals, and protected user privacy at every step.",
-      icon: <ShieldCheck className="text-primary" size={24} />,
+      title: "Safety",
+      desc: "Bank-grade data security, verified medical professionals, and protected user privacy at every step.",
+      icon: <ShieldCheck className="text-primary group-hover:text-white" size={24} />,
     },
     {
-      title: "support",
-      desc: "24/7 support to guide, assist, and empower your healthcare experience.",
-      icon: <Headphones className="text-primary" size={24} />,
+      title: "Support",
+      desc: "Dedicated 24/7 support team to guide, assist, and empower your digital healthcare journey.",
+      icon: <Headphones className="text-primary group-hover:text-white" size={24} />,
     },
   ];
 
   const offers = [
-    { title: "online consultation", desc: "Consult licensed doctors via video call securely.", icon: <Video size={20} /> },
-    { title: "digital prescriptions", desc: "Receive and share your prescriptions digitally.", icon: <FileText size={20} /> },
-    { title: "health records", desc: "All your medical history stored safely in one place.", icon: <Database size={20} /> },
-    { title: "easy scheduling", desc: "Book, reschedule, or cancel with just a few clicks.", icon: <CalendarCheck size={20} /> },
-    { title: "smart reminders", desc: "Automatic reminders for prescriptions and checkups.", icon: <Bell size={20} /> },
-    { title: "secure messaging", desc: "Encrypted chat with healthcare professionals.", icon: <MessageSquare size={20} /> },
+    { title: "Online Consultation", desc: "Consult licensed doctors via secure high-definition video calls.", icon: <Video size={20} /> },
+    { title: "Digital Prescriptions", desc: "Receive and manage your prescriptions digitally for easy pharmacy access.", icon: <FileText size={20} /> },
+    { title: "Health Records", desc: "Your entire medical history stored safely and accessible in one central hub.", icon: <Database size={20} /> },
+    { title: "Easy Scheduling", desc: "Book, reschedule, or cancel your appointments with just a few simple clicks.", icon: <CalendarCheck size={20} /> },
+    { title: "Smart Reminders", desc: "Receive automatic notifications for upcoming checkups and prescription refills.", icon: <Bell size={20} /> },
+    { title: "Secure Messaging", desc: "Direct, encrypted chat with your healthcare providers for quick follow-ups.", icon: <MessageSquare size={20} /> },
   ];
 
   return (
-    <div className="flex flex-col gap-24 py-12">
+    <div className="flex flex-col gap-24 py-16 transition-all duration-500">
       
       {/* 1. Hero Header */}
-      <section className="px-6 md:px-12 lg:px-20">
+      <section className="px-6 md:px-12 lg:px-20 text-center md:text-left">
         <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
-            About <span className="text-primary">us</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
+            About <span className="text-primary">Us</span>
           </h1>
-          <p className="mt-6 text-lg text-slate-500 leading-relaxed">
+          <p className="mt-6 text-lg md:text-xl text-slate-600 leading-relaxed font-light">
             We are on a mission to bridge the gap between patients and quality healthcare 
-            through innovative technology and compassionate care.
+            through innovative technology and compassionate, patient-centered care.
           </p>
         </div>
       </section>
 
       {/* 2. Intro Section */}
-      <section className="px-6 md:px-12 lg:px-20 grid md:grid-cols-2 gap-12 items-center">
+      <section className="px-6 md:px-12 lg:px-20 grid md:grid-cols-2 gap-16 items-center">
         <div className="relative group">
-          <div className="absolute -inset-4 bg-primary/5 rounded-3xl scale-95 group-hover:scale-100 transition-transform duration-500" />
+          <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition duration-1000" />
           <Image
             src={assets.about_image}
             width={600}
             height={600}
-            alt="medical professionals"
-            className="relative rounded-2xl object-cover shadow-2xl transition-transform duration-500 group-hover:-rotate-1"
+            alt="Medical Professionals"
+            className="relative rounded-2xl object-cover shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]"
           />
         </div>
 
         <div className="flex flex-col gap-8">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-slate-900">our story</h2>
-            <p className="text-slate-600 leading-relaxed">
-              Welcome to <span className="font-semibold text-primary">prescripto</span>, your 
-              trusted partner in healthcare. We started with a simple idea: that booking a 
-              doctor should be as easy as booking a ride.
+          <div className="space-y-6">
+            <h2 className="text-3xl font-bold text-slate-900 capitalize">Our Story</h2>
+            <p className="text-slate-600 text-lg leading-relaxed">
+              Welcome to <span className="font-bold text-primary">Prescripto</span>, your 
+              trusted partner in modern healthcare. We started with a simple vision: 
+              that accessing a doctor should be as intuitive and effortless as any other digital service.
             </p>
-            <p className="text-slate-600 leading-relaxed">
-              Today, we connect thousands of patients with verified specialists, 
-              ensuring that quality medical advice is just a click away.
+            <p className="text-slate-600 text-lg leading-relaxed">
+              Today, we proudly connect thousands of patients with verified specialists, 
+              ensuring that quality medical advice and care are always just a click away.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
-            <div className="p-5 rounded-2xl bg-blue-50/50 border border-blue-100">
-              <h3 className="font-bold text-slate-900 mb-2">our vision</h3>
-              <p className="text-sm text-slate-600">To lead the global transition toward accessible digital health solutions.</p>
+          <div className="grid sm:grid-cols-2 gap-6 pt-4">
+            <div className="p-6 rounded-2xl bg-blue-50/50 border border-blue-100 hover:bg-white hover:shadow-lg transition-all duration-300">
+              <h3 className="font-bold text-slate-900 mb-2 text-lg">Our Vision</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">To lead the global transition toward accessible, equitable, and efficient digital health solutions.</p>
             </div>
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100">
-              <h3 className="font-bold text-slate-900 mb-2">our commitment</h3>
-              <p className="text-sm text-slate-600">Innovation, security, and patient-first care in every feature we build.</p>
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg transition-all duration-300">
+              <h3 className="font-bold text-slate-900 mb-2 text-lg">Our Commitment</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">Continuous innovation, absolute security, and a patient-first approach in every feature we build.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* 3. Why Choose Us (Icon Cards) */}
-      <section className="px-6 md:px-12 lg:px-20 bg-slate-50 py-20">
+      <section className="px-6 md:px-12 lg:px-20 bg-slate-50/80 py-24">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900">why choose <span className="text-primary">prescripto?</span></h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Why Choose <span className="text-primary">Prescripto?</span></h2>
+          <p className="text-slate-500 mt-4 max-w-2xl mx-auto">We combine medical expertise with technical excellence to provide a seamless healthcare experience.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((item, idx) => (
-            <div key={idx} className="group p-8 bg-white rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+            <div key={idx} className="group p-8 bg-white rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-transparent hover:border-primary/10">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary transition-colors duration-300">
                 {item.icon}
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3">{item.title}</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -128,19 +130,19 @@ const About = () => {
 
       {/* 4. Features Grid */}
       <section className="px-6 md:px-12 lg:px-20">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-          <div>
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">what we offer</h2>
-            <p className="text-slate-500 mt-2">comprehensive digital tools for your health journey.</p>
-          </div>
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">What We Offer</h2>
+          <p className="text-slate-500 mt-2 text-lg font-light">Comprehensive digital tools designed for your unique health journey.</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {offers.map((service, idx) => (
-            <div key={idx} className="flex gap-4 p-6 rounded-2xl border border-slate-100 hover:border-primary/20 hover:bg-primary/5 transition-all group">
-              <div className="mt-1 text-primary group-hover:scale-110 transition-transform">{service.icon}</div>
+            <div key={idx} className="flex gap-5 p-7 rounded-2xl border border-slate-100 hover:border-primary/30 hover:bg-primary/[0.02] transition-all group cursor-default">
+              <div className="mt-1 p-3 rounded-lg bg-slate-50 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                {service.icon}
+              </div>
               <div>
-                <h3 className="font-bold text-slate-900 mb-1">{service.title}</h3>
-                <p className="text-sm text-slate-500">{service.desc}</p>
+                <h3 className="font-bold text-slate-900 mb-2 text-lg">{service.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{service.desc}</p>
               </div>
             </div>
           ))}
@@ -148,20 +150,20 @@ const About = () => {
       </section>
 
       {/* 5. How it Works (Timeline Style) */}
-      <section className="px-6 md:px-12 lg:px-20">
-        <h2 className="text-3xl font-bold text-center mb-16">how it works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <section className="px-6 md:px-12 lg:px-20 py-10">
+        <h2 className="text-3xl font-bold text-center mb-20 text-slate-900">How It Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {[
-            "create your profile",
-            "browse & book",
-            "consult with experts",
-            "track your progress",
+            { title: "Create Your Profile", desc: "Sign up and complete your health profile securely." },
+            { title: "Browse & Book", desc: "Find the right specialist and select a convenient time." },
+            { title: "Consult With Experts", desc: "Meet your doctor via our encrypted video platform." },
+            { title: "Track Your Progress", desc: "Access your history and follow-up on your care plan." },
           ].map((step, index) => (
-            <div key={index} className="relative text-center md:text-left">
-              <span className="text-6xl font-black text-slate-100 absolute -top-10 left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 z-0">0{index + 1}</span>
-              <div className="relative z-10 pt-4">
-                <h3 className="font-bold text-slate-900 text-lg mb-2">{step}</h3>
-                <p className="text-sm text-slate-500">follow our simple process to get the care you need instantly.</p>
+            <div key={index} className="relative text-center md:text-left group">
+              <span className="text-8xl font-black text-slate-100 absolute -top-12 left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 z-0 select-none group-hover:text-primary/5 transition-colors">0{index + 1}</span>
+              <div className="relative z-10">
+                <h3 className="font-bold text-slate-900 text-xl mb-3">{step.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
               </div>
             </div>
           ))}
@@ -170,18 +172,24 @@ const About = () => {
 
       {/* 6. Testimonials */}
       <section className="px-6 md:px-12 lg:px-20">
-        <div className="bg-primary rounded-3xl p-8 md:p-16 flex flex-col items-center">
-          <Quote className="text-white/20 mb-6" size={48} />
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">what our users say</h2>
-          <div className="grid md:grid-cols-3 gap-8 w-full">
+        <div className="bg-primary rounded-[3rem] p-10 md:p-20 flex flex-col items-center shadow-2xl shadow-primary/20 relative overflow-hidden">
+          {/* Decorative background circle */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl" />
+          
+          <Quote className="text-white/20 mb-8" size={64} fill="currentColor" />
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16 tracking-tight">What Our Users Say</h2>
+          
+          <div className="grid md:grid-cols-3 gap-10 w-full relative z-10">
             {[
-              { name: "anjali sharma", text: "prescripto made it easy to get help for my chronic condition without hassle." },
-              { name: "ravi thapa", text: "excellent ui, smooth experience. booking an appointment takes seconds!" },
-              { name: "sita gurung", text: "i love that i can access all my medical history in one place. very helpful." }
+              { name: "Anjali Sharma", text: "Prescripto made it incredibly easy to get help for my chronic condition without the usual hassle of clinic wait times." },
+              { name: "Ravi Thapa", text: "Excellent user interface and a very smooth experience. Booking a specialist appointment now literally takes seconds!" },
+              { name: "Sita Gurung", text: "I love that I can access my entire medical history and prescriptions in one place. It is a game changer for busy parents." }
             ].map((t, i) => (
-              <div key={i} className="bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
-                <p className="text-white/90 text-sm leading-relaxed mb-4 italic">"{t.text}"</p>
-                <p className="text-white font-bold text-xs">— {t.name}</p>
+              <div key={i} className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-3xl hover:bg-white/15 transition-colors">
+                <p className="text-white/90 text-md leading-relaxed mb-6 italic font-light">"{t.text}"</p>
+                <div className="flex items-center gap-2 uppercase tracking-widest text-[10px] font-bold text-white/70">
+                   <div className="w-4 h-[1px] bg-white/50" /> {t.name}
+                </div>
               </div>
             ))}
           </div>
@@ -189,16 +197,17 @@ const About = () => {
       </section>
 
       {/* 7. CTA */}
-      <section className="px-6 md:px-12 lg:px-20 text-center pb-20">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">Ready to take control of your health?</h2>
-        <p className="text-slate-500 mb-10 max-w-xl mx-auto text-lg">
-          join thousands of users who trust prescripto for their healthcare needs.
+      <section className="px-6 md:px-12 lg:px-20 text-center pb-24">
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 tracking-tight">Ready to take control of your health?</h2>
+        <p className="text-slate-500 mb-12 max-w-2xl mx-auto text-lg md:text-xl font-light">
+          Join thousands of users who trust Prescripto for their daily healthcare needs and expert medical advice.
         </p>
         <button
           onClick={() => { router.push("/login"); window.scrollTo(0,0); }}
-          className="px-10 py-4 bg-primary text-white font-bold rounded-full shadow-xl shadow-primary/20 hover:scale-105 transition-all"
+          className="group flex items-center gap-3 mx-auto px-10 py-5 bg-primary text-white font-bold rounded-full shadow-2xl shadow-primary/30 hover:scale-105 hover:bg-primary/90 transition-all active:scale-95"
         >
-          get started now
+          Get Started Now
+          <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
         </button>
       </section>
     </div>
