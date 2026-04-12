@@ -1,68 +1,27 @@
-// app/api/ai/appointments/route.js
 import connectDB from '@/lib/db';
 import Appointment from '@/models/aiAppointment';
 import appointmentModel from '@/models/appointment';
 import doctorModel from '@/models/doctor';
 import { NextResponse } from 'next/server';
 
-// GET - Fetch all appointments
-// export async function GET() {
-//   try {
-//     await connectDB();
-    
-//     const appointments = await Appointment.find({})
-//       .sort({ createdAt: -1 })
-//       .lean();
-    
-//     const formattedAppointments = appointments.map(appt => ({
-//       id: appt._id.toString(),
-//       patientName: appt.patientName,
-//       doctorName: appt.doctorName,
-//       date: appt.date,
-//       symptom: appt.symptom,
-//       status: appt.status,
-//       createdAt: appt.createdAt,
-//       updatedAt: appt.updatedAt
-//     }));
-
-//     return NextResponse.json({ 
-//       success: true,
-//       appointments: formattedAppointments 
-//     });
-    
-//   } catch (error) {
-//     console.error('Error fetching appointments:', error);
-//     return NextResponse.json(
-//       { error: 'Failed to fetch appointments' },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-// app/api/ai/appointments/route.js
-
 export async function GET(request) {
   try {
     await connectDB();
-    
-    // Get doctorName from search params if it exists
     const { searchParams } = new URL(request.url);
     const doctorFilter = searchParams.get('doctor');
     
-    console.log(doctorFilter);
-    
-    // Build query
     const query = doctorFilter ? { doctorName: doctorFilter } : {};
     
     const appointments = await Appointment.find(query)
-      .sort({ date: 1 }) // Sort by appointment date for doctors
+      .sort({ createdAt: -1 }) // Sort by newest log first
       .lean();
     
     const formattedAppointments = appointments.map(appt => ({
       id: appt._id.toString(),
       patientName: appt.patientName,
       doctorName: appt.doctorName,
-      date: appt.date,
+      slotDate: appt.slotDate, // Map to new field
+      slotTime: appt.slotTime, // Map to new field
       symptom: appt.symptom,
       status: appt.status,
     }));
@@ -73,38 +32,26 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new appointment and update doctor slots
 export async function POST(request) {
   try {
     await connectDB();
     
-     // --- SAFE JSON PARSING ---
     let body;
-    try {
-      body = await request.json();
-    } catch (e) {
+    try { body = await request.json(); } catch (e) {
       return NextResponse.json({ error: "Empty request body" }, { status: 400 });
     }
-    // -------------------------
     
-    // 1. Destructure the NEW fields we are sending from the AI tool
-    const { patientName, docId, slotDate, slotTime, symptom, userId, status } = body;
+    const { patientName, age, docId, slotDate, slotTime, symptom, userId } = body;
 
-    // 2. Updated Validation: Check for docId, slotDate, and slotTime
     if (!patientName || !docId || !slotDate || !slotTime || !symptom) {
-      return NextResponse.json(
-        { error: 'Missing required fields: patientName, docId, slotDate, slotTime, symptom' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
     
-    // 1. Fetch Doctor
     const doctor = await doctorModel.findById(docId);
     if (!doctor) return NextResponse.json({ error: 'Doctor not found' }, { status: 404 });
 
-    // 2. Manage Slots (Ensuring we use the Object reference correctly)
+    // Manage Doctor Slots
     let current_slots = { ...doctor.slots_booked } || {};
-
     if (current_slots[slotDate]) {
         if (current_slots[slotDate].includes(slotTime)) {
             return NextResponse.json({ error: 'Slot already taken' }, { status: 400 });
@@ -114,29 +61,30 @@ export async function POST(request) {
         current_slots[slotDate] = [slotTime];
     }
 
-    // 3. Update Doctor Model (Crucial for the Web UI to see the slot as booked)
-    // We use findByIdAndUpdate to bypass potential version conflicts
     await doctorModel.findByIdAndUpdate(docId, { slots_booked: current_slots });
 
-    // 4. Save to main appointmentModel (Matches your JSON structure)
+    // 1. Save to main system (appointmentModel)
     const mainAppt = new appointmentModel({
         userId: userId || "AI_GUEST_USER",
         docId: docId,
         slotDate: slotDate,
         slotTime: slotTime,
-        userData: { name: patientName, phone: "AI Booking" }, // Minimal user data
-        docData: doctor, // Snapshot of doctor data as required by your model
+        userData: { name: patientName, age: age, phone: "AI Booking" },
+        docData: doctor,
         amount: doctor.fees,
         date: Date.now(),
         symptom: symptom
     });
     await mainAppt.save();
 
-    // 5. Save to AI Logs
+    // 2. Save to AI Logs (Appointment model) - UPDATED TO MATCH NEW SCHEMA
     const aiLog = await Appointment.create({
         patientName,
+        age,
+        docId,             // Added
         doctorName: doctor.name,
-        date: `${slotDate} at ${slotTime}`,
+        slotDate,          // Matches schema
+        slotTime,          // Matches schema
         symptom,
         status: 'confirmed'
     });
@@ -144,11 +92,8 @@ export async function POST(request) {
     return NextResponse.json({ success: true, appointment: aiLog }, { status: 201 });
     
   } catch (error) {
-    console.error('Error creating appointment:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
-      { status: 500 }
-    );
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 

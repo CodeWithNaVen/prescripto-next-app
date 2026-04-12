@@ -289,11 +289,12 @@ const VoiceModal = ({ isOpen, onClose, onAppointmentBooked }) => {
                                                 headers: { 'Content-Type': 'application/json' },
                                                 body: JSON.stringify({
                                                     patientName: args.patientName,
-                                                    docId: args.docId,        // Sent from tool
-                                                    slotDate: args.slotDate,  // Sent from tool
-                                                    slotTime: args.slotTime,  // Sent from tool
-                                                    symptom: args.symptom,
-                                                    userId: "AI_USER_VOICE"   // Placeholder or from context
+                                                    age: args.age,
+                                                    docId: args.docId,
+                                                    slotDate: args.slotDate,
+                                                    slotTime: args.slotTime,
+                                                    doctorName: args.doctorName, // used for logs
+                                                    symptom: args.symptom
                                                 })
                                             });
 

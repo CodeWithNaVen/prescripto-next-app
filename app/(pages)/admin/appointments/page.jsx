@@ -45,10 +45,10 @@ const AllAppointments = () => {
           <div key={index} className='flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-800 py-3 px-6 border-b border-[var(--primary)] hover:bg-indigo-100'>
             <p className='max-sm:hidden'>{index+1}</p>
             <div className='flex items-center gap-2'>
-              <Image src={item.userData.profileImage} width={40} height={40} alt="" className='w-8 rounded-full border border-gray-200' />
+              <Image src={item.userData.profileImage || adminAssets.doctor_icon} width={40} height={40} alt="" className='w-8 rounded-full border border-gray-200' />
               <p>{item.userData.name}</p>
             </div>
-            <p className='max-sm:hidden'>{item.userData.dob !== "Not Selected" && calculateAge(item.userData.dob)}</p>
+            <p className='max-sm:hidden'>{ item.userData?.age || calculateAge(item.userData?.dob) }</p>
             <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
 
             <div className='flex items-center gap-2'>

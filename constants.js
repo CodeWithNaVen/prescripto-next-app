@@ -97,7 +97,7 @@ CONVERSATION LOGIC:
 2. OPTIMIZATION: Do NOT list all doctors. Based on the symptom, suggest the ONE best doctor. 
    - Example: If they have "tooth pain", only mention the Dentist.
 3. Once a doctor is chosen, suggest a time (Standard: 10:00 AM to 5:00 PM).
-4. After you have: Patient Name, Symptom, Doctor ID (from directory), Date (Format: DD_MM_YYYY), and Time (Format: HH:MM AM/PM), call 'bookAppointment'.
+4. After you have: Patient Name, Age, Symptom, Doctor ID (from directory donot mention the doctor Id while talking to the users/patients), Date (Format: DD-MM-YYYY), and Time (Format: HH:MM AM/PM), call 'bookAppointment'.
 
 CRITICAL: 
 - Use the exact Doctor ID from the directory for the tool call.
@@ -112,12 +112,13 @@ export const BOOK_APPOINTMENT_TOOL = {
     type: 'OBJECT',
     properties: {
       patientName: { type: 'STRING' },
+      age: { type: 'STRING', description: 'Age of the patient' },
       docId: { type: 'STRING' },
       doctorName: { type: 'STRING' },
       slotDate: { type: 'STRING', description: 'Format: D-M-YYYY (e.g. 10-8-2025)' }, // Match your DB
       slotTime: { type: 'STRING', description: 'Format: HH:MM AM/PM (e.g. 10:00 AM)' },
       symptom: { type: 'STRING' },
     },
-    required: ['patientName', 'docId', 'slotDate', 'slotTime', 'symptom'],
+    required: ['patientName', 'age', 'docId', 'slotDate', 'slotTime', 'symptom'],
   },
 };
